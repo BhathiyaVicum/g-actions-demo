@@ -1,17 +1,19 @@
 name: test
-on:
-  push:
-    branches:
-      - main
-      - develop
-      - 'release/**'
-  pull_request:
-    branches:
-      - main
+on: push
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Buils Step
-        run: echo "A demo build"
-  
+      - name: Checkout code from repo
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:
+          aws-secret-access-key:
+          aws-region:
+      - name: Code static code to S3
+        run: |
+          aws s3 sync ./ s3://test-web-bathiya-demo/ \
+          --exclude "*" \
+          --include "index.html"
